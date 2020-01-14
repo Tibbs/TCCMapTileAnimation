@@ -1,10 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="ipad9_7" orientation="portrait" layout="fullscreen" appearance="light"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="BYZ-38-t0r">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
-        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <scenes>
         <!--Map View Controller-->
@@ -19,86 +16,63 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ac8-nG-8th">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" pitchEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ac8-nG-8th">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="975"/>
                                 <connections>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="DeJ-O1-qot"/>
                                 </connections>
                             </mapView>
-                            <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fFG-Tb-ODj">
-                                <rect key="frame" x="234" y="952" width="300" height="64"/>
-                                <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I6j-r5-ZsW">
-                                        <rect key="frame" x="265" y="23" width="35" height="21"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="35" id="ipp-fP-eln"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="gOE-Ly-EY3">
-                                        <rect key="frame" x="0.0" y="8" width="300" height="2"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="2" id="LqW-Fq-zND"/>
-                                            <constraint firstAttribute="width" constant="300" id="R8I-JQ-F82"/>
-                                        </constraints>
-                                    </progressView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gKN-2B-1ni">
-                                        <rect key="frame" x="0.0" y="18" width="30" height="30"/>
-                                        <state key="normal" title="Play">
-                                            <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="onHandleStartStopAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="m8C-x6-6g5"/>
-                                        </connections>
-                                    </button>
-                                    <slider opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="8oR-Pc-O5E">
-                                        <rect key="frame" x="36" y="18" width="223" height="31"/>
-                                        <connections>
-                                            <action selector="finishedSliding:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="4h8-df-BxM"/>
-                                            <action selector="finishedSliding:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zbn-QB-glq"/>
-                                            <action selector="onSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="loa-3H-Zlj"/>
-                                        </connections>
-                                    </slider>
-                                </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="0" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Znf-mz-Av0">
+                                <rect key="frame" x="500" y="992" width="42" height="21"/>
                                 <constraints>
-                                    <constraint firstItem="I6j-r5-ZsW" firstAttribute="leading" secondItem="8oR-Pc-O5E" secondAttribute="trailing" constant="8" id="ERD-Ey-Yh6"/>
-                                    <constraint firstItem="gOE-Ly-EY3" firstAttribute="top" secondItem="fFG-Tb-ODj" secondAttribute="top" constant="8" id="IDl-Mf-HnR"/>
-                                    <constraint firstItem="gKN-2B-1ni" firstAttribute="leading" secondItem="fFG-Tb-ODj" secondAttribute="leading" id="LgG-sB-zz3"/>
-                                    <constraint firstItem="I6j-r5-ZsW" firstAttribute="top" secondItem="gOE-Ly-EY3" secondAttribute="bottom" constant="13" id="Mjs-hi-ipJ"/>
-                                    <constraint firstItem="8oR-Pc-O5E" firstAttribute="top" secondItem="gOE-Ly-EY3" secondAttribute="bottom" constant="8" id="VWR-wN-o01"/>
-                                    <constraint firstAttribute="height" constant="64" id="X7M-xj-TGI"/>
-                                    <constraint firstItem="gOE-Ly-EY3" firstAttribute="leading" secondItem="fFG-Tb-ODj" secondAttribute="leading" id="ZGW-pO-p14"/>
-                                    <constraint firstAttribute="trailing" secondItem="gOE-Ly-EY3" secondAttribute="trailing" id="cGf-kg-rVa"/>
-                                    <constraint firstItem="gKN-2B-1ni" firstAttribute="top" secondItem="gOE-Ly-EY3" secondAttribute="bottom" constant="8" id="otP-cs-Uzg"/>
-                                    <constraint firstItem="8oR-Pc-O5E" firstAttribute="leading" secondItem="gKN-2B-1ni" secondAttribute="trailing" constant="8" id="vNf-84-gQu"/>
-                                    <constraint firstAttribute="trailing" secondItem="I6j-r5-ZsW" secondAttribute="trailing" id="zA9-Ji-Cw3"/>
+                                    <constraint firstAttribute="width" constant="42" id="YYW-fJ-0uf"/>
+                                    <constraint firstAttribute="height" constant="21" id="xPc-b1-Q5z"/>
                                 </constraints>
-                            </view>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <progressView hidden="YES" opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WjH-ln-t63">
+                                <rect key="frame" x="242" y="980" width="320" height="2"/>
+                            </progressView>
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nfb-E5-mle">
+                                <rect key="frame" x="247" y="990" width="30" height="30"/>
+                                <state key="normal" title="Play">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="onHandleStartStopAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0Ax-Ru-HnU"/>
+                                </connections>
+                            </button>
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Gnq-s2-qfm">
+                                <rect key="frame" x="283" y="990" width="211" height="31"/>
+                                <connections>
+                                    <action selector="finishedSliding:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="73R-dZ-Map"/>
+                                    <action selector="finishedSliding:" destination="BYZ-38-t0r" eventType="touchUpInside" id="tap-V7-W1d"/>
+                                    <action selector="onSliderValueChange:" destination="BYZ-38-t0r" eventType="valueChanged" id="gqG-cH-XwA"/>
+                                </connections>
+                            </slider>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="fFG-Tb-ODj" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="0Xs-V5-X0X"/>
-                            <constraint firstItem="ac8-nG-8th" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="UGx-i9-9LT"/>
-                            <constraint firstAttribute="trailing" secondItem="ac8-nG-8th" secondAttribute="trailing" id="VBb-ja-YXd"/>
-                            <constraint firstItem="ac8-nG-8th" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Wdo-Pg-hom"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="fFG-Tb-ODj" secondAttribute="bottom" constant="8" id="oUl-70-Bvv"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="ac8-nG-8th" secondAttribute="bottom" id="uZO-78-Fik"/>
+                            <constraint firstItem="nfb-E5-mle" firstAttribute="top" secondItem="WjH-ln-t63" secondAttribute="bottom" constant="8" id="iWK-ZV-snh"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="downloadProgressView" destination="gOE-Ly-EY3" id="o93-al-RR2"/>
-                        <outlet property="frameIndexLabel" destination="I6j-r5-ZsW" id="ldp-Cv-s9N"/>
+                        <outlet property="downloadProgressView" destination="WjH-ln-t63" id="hze-ov-jOX"/>
+                        <outlet property="frameIndexLabel" destination="Znf-mz-Av0" id="tun-oj-qeg"/>
                         <outlet property="mapView" destination="ac8-nG-8th" id="BJX-ov-euC"/>
-                        <outlet property="startStopButton" destination="gKN-2B-1ni" id="JhU-XW-iNP"/>
-                        <outlet property="timeSlider" destination="8oR-Pc-O5E" id="a3H-Wf-tka"/>
+                        <outlet property="startStopButton" destination="nfb-E5-mle" id="WIx-lf-9Y6"/>
+                        <outlet property="timeSlider" destination="Gnq-s2-qfm" id="6zo-ld-YXE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139.84375" y="100.78125"/>
         </scene>
     </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination"/>
+    </simulatedMetricsContainer>
 </document>

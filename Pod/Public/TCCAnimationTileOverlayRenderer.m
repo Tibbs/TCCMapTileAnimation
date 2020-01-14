@@ -46,7 +46,6 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale
 {
     __weak TCCAnimationTileOverlayRenderer * weakSelf = self;
-    if(!weakSelf) { return NO; }
     weakSelf.renderedTileZoomLevel = [TCCMapKitHelpers zoomLevelForZoomScale:zoomScale];
 
     //The overlay can be nil if often or quickly to dealloc the renderer.
