@@ -46,6 +46,6 @@
 - (nullable id)initWithFrame:(MKMapRect)frame x:(NSInteger)x y:(NSInteger)y z:(NSInteger)z;
 - (nullable id)initWithFrame:(MKMapRect)frame configuringURLSession: (NSURLSessionConfiguration* _Nonnull)configuration x:(NSInteger)x y:(NSInteger)y z:(NSInteger)z;
 
-- (void)fetchTileForFrameIndex:(NSInteger)frameIndex session:(NSURLSession *)session completionHandler:(void (^)(NSData * date, NSURLResponse * response, NSError * error))completionBlock;
+- (void)fetchTileForFrameIndex:(NSInteger)frameIndex session:(NSURLSession *)session completionHandler:(void (^)(NSData * date, NSError * error))completionBlock;
 
 @end

@@ -364,7 +364,7 @@ TCCAnimationState _currentAnimationState;
 {
     __weak __typeof__(TCCAnimationTile *) weakTile = [self.staticTilesCache objectForKey:[self keyForTilePath:path]];
     
-    [weakTile fetchTileForFrameIndex:self.currentFrameIndex session:_session completionHandler:^(NSData * data, NSURLResponse * response, NSError * error) {
+    [weakTile fetchTileForFrameIndex:self.currentFrameIndex session:_session completionHandler:^(NSData * data, NSError * error) {
         if (result) result(data, error);
     }];
 }
