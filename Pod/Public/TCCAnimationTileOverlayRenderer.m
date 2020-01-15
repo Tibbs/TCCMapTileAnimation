@@ -63,7 +63,7 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
         BOOL resultState = NO;
         
         int tileRow = 0;
-        //The duplicate requests appear because this func loads tiles for retina display (1 mapRect contains 4-6 tiles).
+        //The duplicate requests appear because this func loads tiles for retina display (1 mapRect contains 1, 6, 12 tiles).
         while (tileRow < heightCount) {
             int tileCol = 0;
             while (tileCol < widthCount) {
@@ -88,6 +88,7 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
                 if (!tile.tileImage) {
                     MKTileOverlayPath tilePath = [TCCMapKitHelpers tilePathForMapRect:localMapRect zoomLevel:cappedZoomLevel];
 
+                    //tileActive accepts one download process per tile.
                     BOOL tileActive = NO;
                     @synchronized(weakSelf) {
                         //Keep a set of requests which in the downloading process by the tile path key.
@@ -104,7 +105,8 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
                                 [weakSelf.activeDownloads removeObject:[[weakSelf class] keyForTilePath:tilePath]];
                             }
                             if (tileData) {
-                                //The setNeedsDisplayInMapRect is called once for each downloaded sub-tile of the mapRect (4-6 sub-tiles for retina).
+                                //The setNeedsDisplayInMapRect is called once for each downloaded tile of the mapRect
+                                //(depend of the zoom level the mapRect has 12, 6, 1 tiles).
                                 [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
                             }
                         }];
