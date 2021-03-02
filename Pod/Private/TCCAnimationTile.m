@@ -60,7 +60,7 @@
     return [[NSString stringWithFormat:@"%ld/%ld/%ld", (long)self.x, (long)self.y, (long)self.z] hash];
 }
 
-- (void)fetchTileForFrameIndex:(NSInteger)frameIndex session:(NSURLSession *)session completionHandler:(void (^)(NSData * date, NSURLResponse * response, NSError * error))completionBlock {
+- (void)fetchTileForFrameIndex:(NSInteger)frameIndex session:(NSURLSession *)session completionHandler:(void (^)(NSData * date, NSError * error))completionBlock {
     
     NSURL *url = [NSURL URLWithString:self.templateURLs[frameIndex]];
     self.tileImageIndex = frameIndex;
@@ -70,14 +70,20 @@
     [request setHTTPMethod: @"GET"];
     [request setAllHTTPHeaderFields:session.configuration.HTTPAdditionalHeaders];
     NSURLSessionTask * task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (data && !error) {
+        if (((NSHTTPURLResponse*)response).statusCode != 200) {
+            //Check unsuccessful response in case if user requests unavailable tail for specific zoom.
+            error = [NSError errorWithDomain:@"tccmaptileanimation" code:NSURLErrorResourceUnavailable userInfo:nil];
+            //The response can return an error status in the data
+            data = nil;
+        } else if (data && !error) {
             self.tileImage = [UIImage imageWithData:data];
         }
-        if (self.tileImage == nil) {
+
+        if (self.tileImage == nil ) {
             self.failedToFetch = YES;
         }
         if (completionBlock) {
-            completionBlock(data, response, error);
+            completionBlock(data, error);
         }
     }];
     [task resume];

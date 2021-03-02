@@ -17,6 +17,8 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
 @interface TCCAnimationTileOverlayRenderer ()
 - (int)tileCoordinateSizeForZoomLevel:(int)zoomLevel;
 @property (readwrite, atomic) NSUInteger renderedTileZoomLevel;
+//The set is used to limit number of requests
+@property (nonatomic) NSMutableSet *activeDownloads;
 @end
 
 @implementation TCCAnimationTileOverlayRenderer
@@ -27,6 +29,7 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
 {
     if (self = [super initWithOverlay:overlay])
     {
+        _activeDownloads = [NSMutableSet set];
         if (![overlay isKindOfClass:[TCCAnimationTileOverlay class]]) {
             [NSException raise:@"Unsupported overlay type" format:@"Must be MATAnimatedTileOverlay"];
         }
@@ -42,11 +45,11 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
 
 - (BOOL)canDrawMapRect:(MKMapRect)mapRect zoomScale:(MKZoomScale)zoomScale
 {
-    self.renderedTileZoomLevel = [TCCMapKitHelpers zoomLevelForZoomScale:zoomScale];
-    
-    TCCAnimationTileOverlay *animationOverlay = (TCCAnimationTileOverlay *)self.overlay;
-    
     __weak TCCAnimationTileOverlayRenderer * weakSelf = self;
+    weakSelf.renderedTileZoomLevel = [TCCMapKitHelpers zoomLevelForZoomScale:zoomScale];
+
+    //The overlay can be nil if called too often or the renderer is deallocated before this code is called.
+    __weak __typeof__(TCCAnimationTileOverlay *) animationOverlay = weakSelf.overlay;
     
     // Render static tiles if we're stopped. Uses the MKTileOverlay method loadTileAtPath:result:
     // to load and render tile images asynchronously and on demand.
@@ -60,6 +63,7 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
         BOOL resultState = NO;
         
         int tileRow = 0;
+        //The duplicate requests appear because this func loads tiles for retina display (1 mapRect contains 1, 6, 12 tiles).
         while (tileRow < heightCount) {
             int tileCol = 0;
             while (tileCol < widthCount) {
@@ -67,7 +71,10 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
                 MKMapRect localMapRect = MKMapRectMake(mapRect.origin.x + (tileCol * tileSizeForZoomLevel), mapRect.origin.y + (tileRow * tileSizeForZoomLevel), tileSizeForZoomLevel, tileSizeForZoomLevel);
 
                 //The tile can be nil in a case of low memory
-                __weak __typeof__(TCCAnimationTile *) tile = [animationOverlay staticTileForMapRect:localMapRect zoomLevel:cappedZoomLevel];
+                __weak __typeof__(TCCAnimationTile *) tile;
+                @synchronized (weakSelf) {
+                    tile = [animationOverlay staticTileForMapRect:localMapRect zoomLevel:cappedZoomLevel];
+                }
                 
                 // Draw the image if we have it, otherwise load the tile data. Returning NO will make sure that
                 // drawRect doesn't get called immediately until setNeedsDisplayInMapRect:zoomScale: gets called
@@ -81,9 +88,29 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
                 if (!tile.tileImage) {
                     MKTileOverlayPath tilePath = [TCCMapKitHelpers tilePathForMapRect:localMapRect zoomLevel:cappedZoomLevel];
 
-                    [animationOverlay loadTileAtPath:tilePath result:^(NSData *tileData, NSError *error) {
-                        [weakSelf setNeedsDisplayInMapRect:localMapRect zoomScale:zoomScale];
-                    }];
+                    //tileActive accepts one download process per tile.
+                    BOOL tileActive = NO;
+                    @synchronized(weakSelf) {
+                        //Keep a set of requests which in the downloading process by the tile path key.
+                        NSString * xyz = [[weakSelf class] keyForTilePath:tilePath];
+                        tileActive = ([weakSelf.activeDownloads containsObject:xyz]);
+                        if (!tileActive) {
+                            [weakSelf.activeDownloads addObject:xyz];
+                        }
+                    }
+                    //Avoid a duplicate request which already in the downloading process
+                    if (!tileActive) {
+                        [animationOverlay loadTileAtPath:tilePath result:^(NSData *tileData, NSError *error) {
+                            @synchronized(weakSelf) {
+                                [weakSelf.activeDownloads removeObject:[[weakSelf class] keyForTilePath:tilePath]];
+                            }
+                            if (tileData) {
+                                //The setNeedsDisplayInMapRect is called once for each downloaded tile of the mapRect
+                                //(depend of the zoom level the mapRect has 12, 6, 1 tiles).
+                                [weakSelf setNeedsDisplayInMapRect:mapRect zoomScale:zoomScale];
+                            }
+                        }];
+                    }
                 }
                                 
                 tileCol++;
@@ -95,6 +122,11 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
     }
     
     return YES;
+}
+
++ (NSString *)keyForTilePath:(MKTileOverlayPath)path
+{
+    return [NSString stringWithFormat:@"%ld-%ld-%ld", (long)path.x, (long)path.y, (long)path.z];
 }
 
 /*
@@ -129,10 +161,12 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
             // There are two different methods for getting tiles from the overlay, depending on whether the overlay
             // is currently animating or of it's static. This is because the tiles are stored in different data
             // structures depending on whether it's currently animating or if it's static.
-            if (mapOverlay.currentAnimationState == TCCAnimationStateStopped) {
-                tile = [mapOverlay staticTileForMapRect:localMapRect zoomLevel:cappedZoomLevel];
-            } else {
-                tile = [mapOverlay animationTileForMapRect:localMapRect zoomLevel:zoomLevel];
+            @synchronized (self) {
+                if (mapOverlay.currentAnimationState == TCCAnimationStateStopped) {
+                    tile = [mapOverlay staticTileForMapRect:localMapRect zoomLevel:cappedZoomLevel];
+                } else {
+                    tile = [mapOverlay animationTileForMapRect:localMapRect zoomLevel:zoomLevel];
+                }
             }
             if (tile) {
                 [dividedTiles addObject:tile];
@@ -170,10 +204,12 @@ int const TCCTileSize = 256; // on iOS 12 and earlier, all tiles are 256. in 13,
     // is currently animating or of it's static. This is because the tiles are stored in different data
     // structures depending on whether it's currently animating or if it's static.
     NSArray *tiles;
-    if (mapOverlay.currentAnimationState == TCCAnimationStateStopped) {
-        tiles = [mapOverlay cachedStaticTilesForMapRect:mapRect zoomLevel:cappedZoomLevel];
-    } else {
-        tiles = [mapOverlay cachedTilesForMapRect:mapRect zoomLevel:cappedZoomLevel];
+    @synchronized (self) {
+        if (mapOverlay.currentAnimationState == TCCAnimationStateStopped) {
+            tiles = [mapOverlay cachedStaticTilesForMapRect:mapRect zoomLevel:cappedZoomLevel];
+        } else {
+            tiles = [mapOverlay cachedTilesForMapRect:mapRect zoomLevel:cappedZoomLevel];
+        }
     }
     
     for (TCCAnimationTile *tile in tiles) {
