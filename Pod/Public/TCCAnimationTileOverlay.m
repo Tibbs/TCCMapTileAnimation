@@ -19,7 +19,6 @@ NSString *const TCCAnimationTileOverlayErrorDomain = @"TCCAnimationTileOverlayEr
 
 @interface TCCAnimationTileOverlay ()
 
-@property (strong, nonatomic) NSOperationQueue *downloadQueue;
 @property (nonatomic) NSTimeInterval frameDuration;
 @property (strong, nonatomic) NSTimer *timer;
 @property (readwrite) TCCAnimationState currentAnimationState;
