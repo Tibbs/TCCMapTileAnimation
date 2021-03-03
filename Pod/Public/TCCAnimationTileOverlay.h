@@ -53,6 +53,10 @@ extern NSString *const TCCAnimationTileOverlayErrorDomain;
  Array of @c NSString objects
  */
 @property (strong, nonatomic) NSArray *templateURLs;
+/**
+ Download operation queue
+ */
+@property (strong, nonatomic) NSOperationQueue *downloadQueue;
 
 /**
  Designated initializer.
